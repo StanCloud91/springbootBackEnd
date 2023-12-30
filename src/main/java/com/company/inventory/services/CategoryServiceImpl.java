@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.company.inventory.dao.ICategoryDao;
 import com.company.inventory.response.CategoryResponseRest;
@@ -67,10 +69,31 @@ public class CategoryServiceImpl implements ICategoryService{
         return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
 	}
 
-	@Override
+    @Override
+	@Transactional
 	public ResponseEntity<CategoryResponseRest> save(Category category) {
 		// TODO Auto-generated method stub
-		return null;
+		CategoryResponseRest response = new CategoryResponseRest();
+        List<Category> list = new ArrayList<>();
+        
+        try {
+        	Category categorySaved = categoryDao.save(category);        	        		
+        	if(categorySaved != null)
+        	{
+        		list.add(categorySaved);
+        		response.getCategoryResponse().setCategory(list);
+        		response.setMetadata("Respuesta ok","00","Respuesta Exitosa");        	
+        	}else {
+        		response.setMetadata("Respuesta mala","-1","Registro no guardado");                
+                return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+			}
+        }catch (Exception e){
+            response.setMetadata("Respuesta mala","-1","Error al guardar");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
 	}
 
 	@Override

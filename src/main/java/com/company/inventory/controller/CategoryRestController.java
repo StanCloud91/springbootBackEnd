@@ -40,4 +40,10 @@ public class CategoryRestController {
 		ResponseEntity<CategoryResponseRest> response = service.searchById(id);
 		return response;
 	}
+	
+	@PostMapping("/categories")
+	public ResponseEntity<CategoryResponseRest> save(@RequestBody Category category){
+		ResponseEntity<CategoryResponseRest> response = service.save(category);
+		return response;
+	}
 }
