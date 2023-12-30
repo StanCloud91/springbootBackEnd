@@ -39,6 +39,51 @@ public class CategoryServiceImpl implements ICategoryService{
 
         return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
     }
+
+    @Override
+	@Transactional(readOnly = true)
+	public ResponseEntity<CategoryResponseRest> searchById(Long id) {
+		// TODO Auto-generated method stub
+        CategoryResponseRest response = new CategoryResponseRest();
+        List<Category> list = new ArrayList<>();
+        
+        try {
+        	Optional<Category> category = categoryDao.findById(id);
+        	if(category.isPresent()) {
+        		list.add(category.get());
+        		response.getCategoryResponse().setCategory(list);
+        		response.setMetadata("Respuesta ok","00","Respuesta Exitosa");
+        	}else {
+        		response.setMetadata("Respuesta mala","-1","Respuesta Sin Informacion");                
+                return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.NOT_FOUND);
+			}
+        	
+        }catch (Exception e){
+            response.setMetadata("Respuesta mala","-1","Respuesta Sin Exito");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<CategoryResponseRest> save(Category category) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<CategoryResponseRest> update(Category category, Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<CategoryResponseRest> delete(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 
