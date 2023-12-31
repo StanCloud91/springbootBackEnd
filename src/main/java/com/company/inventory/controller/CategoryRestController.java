@@ -22,6 +22,7 @@ import com.company.inventory.services.ICategoryService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api/v1")
 public class CategoryRestController {
