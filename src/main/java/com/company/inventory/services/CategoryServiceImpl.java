@@ -96,16 +96,61 @@ public class CategoryServiceImpl implements ICategoryService{
         return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
 	}
 
-	@Override
+    @Override
+	@Transactional
 	public ResponseEntity<CategoryResponseRest> update(Category category, Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		CategoryResponseRest response = new CategoryResponseRest();
+        List<Category> list = new ArrayList<>();
+        
+        try {
+        	//Category categorySaved = categoryDao.save(category);
+        	Optional<Category> categorySearch = categoryDao.findById(id);
+        	if(categorySearch != null)
+        	{
+        		categorySearch.get().setName(category.getName());
+        		categorySearch.get().setDescription(category.getDescription());
+        		
+        		Category categorytoUpdate = categoryDao.save(categorySearch.get());
+        		if(categorytoUpdate != null)
+            	{
+	        		list.add(categorytoUpdate);
+	        		response.getCategoryResponse().setCategory(list);
+	        		response.setMetadata("Respuesta ok","00","Respuesta Exitosa");
+            	}else {
+            		response.setMetadata("Respuesta mala","-1","Registro no actualizado");                
+                    return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+				}	
+        	}else {
+        		response.setMetadata("Respuesta mala","-1","Registro no actualizado");                
+                return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.NOT_FOUND);
+			}
+        }catch (Exception e){
+            response.setMetadata("Respuesta mala","-1","Error al guardar");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
 	}
 
-	@Override
+    @Override
+	@Transactional
 	public ResponseEntity<CategoryResponseRest> delete(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		CategoryResponseRest response = new CategoryResponseRest();
+
+        try {
+            categoryDao.deleteById(id);        	
+            response.setMetadata("Respuesta ok","00","Respuesta Exitosa");
+        }catch (Exception e){
+            response.setMetadata("Respuesta mala","-1","Respuesta Sin Exito");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+
 	}
 	
 	
